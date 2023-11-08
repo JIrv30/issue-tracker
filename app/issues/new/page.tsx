@@ -9,6 +9,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchemas";
 import {z} from 'zod'
+import ErrorMessage from "@/app/components/ErrorMessage";
 
 type Issueform = z.infer<typeof createIssueSchema>
 
@@ -26,7 +27,9 @@ const NewIssuePage = () => {
       {error && (
         <Callout.Root color='red' className="mb-5">
           <Callout.Text>{error}</Callout.Text>
-        </Callout.Root>)}
+        </Callout.Root>
+        )}
+
       <form 
       className="space-y-3" 
       onSubmit={handleSubmit(async(data)=>{
@@ -38,15 +41,29 @@ const NewIssuePage = () => {
           setError('An unexpected error occured')
         }
       })}>
+
         <TextField.Root>
           <TextField.Input placeholder="Title" {...register('title')}/>
         </TextField.Root>
-        {errors.title && <Text color="red" as='p'>{errors.title.message}</Text>}
+        
+        
+        <ErrorMessage color="red" as='p'>
+          {errors.title?.message}
+        </ErrorMessage>
+        
+        
         <Controller
           name="description"
           control={control}
-          render={({field})=><SimpleMDE placeholder="description" {...field} />} />
-        {errors.description && <Text color="red" as="p">{errors.description.message}</Text>}
+          render={({field})=><SimpleMDE placeholder="description" {...field} />
+          } />
+
+        
+        <ErrorMessage color="red" as="p">
+          {errors.description?.message}
+        </ErrorMessage>
+        
+
         <Button>Submit New Issue</Button>
       </form>
 
